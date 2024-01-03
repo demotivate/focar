@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function Task(){
+export function Task(){
     const [taskName, setTaskName] = useState<string>('');
     const [taskDescription, setTaskDescription] = useState<string>('');
     const [taskDueDate, setTaskDueDate] = useState<number>(-1); //ddmmyyyy
