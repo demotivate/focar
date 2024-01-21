@@ -8,7 +8,7 @@ const config: Config = {
   ],
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["dark"],
+    themes: ["luxury"], //when there's multiple themes, bottom of page turns into inconsistent color
   },
   theme: {
     extend: {
