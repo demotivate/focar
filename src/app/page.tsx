@@ -1,54 +1,48 @@
 // ...
-// "use client"
+"use client"
+import { useSearchParams, useRouter, permanentRedirect } from 'next/navigation'
+import Link from "next/link";
+
+
+import { invoke } from '@tauri-apps/api/tauri'
+import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
 
 import Task from './task'
 import ApiButton from './apiButton'
-import { Component, useCallback, useState } from 'react';
+import { Component, useCallback, useState, useEffect } from 'react';
 import { redirect } from 'next/dist/server/api-utils';
-// const bcrypt = require('bcrypt');
-const saltRounds = 10;
+import uid from 'uid2';
 
 //TODO: license acknowledgement
 
 //TODO: save data (especially auth state)
 let isAuthorized : boolean = false;
 
-// async function authRequest() {
-//   console.log("Authentication request initialized");
-
-//   const client_id = process.env.CLIENT_ID;
-//   let secret_string : string = "s3cretstr!ing";
-//   // bcrypt.hash(Math.random().toString, saltRounds, (err : string, hash : string) => {
-//   //   secret_string = hash;
-//   // })
-//   const res = await fetch('https://todoist.com/oauth/authorize?client_id=' + client_id + '&scope=data:read_write,data:delete&state=' + secret_string)
-//   // The return value is *not* serialized
-//   // You can return Date, Map, Set, etc.
-
-//   if (!res.ok) {
-//     // This will activate the closest `error.js` Error Boundary
-//     throw new Error('Failed to fetch data')
-//   }
-
-//   return res.json()
-// }
+async function CheckState(state: string){
+  // await typeof window !== 'undefined';
+  if (typeof window !== 'undefined') {
+    if(state != localStorage.getItem('todoistAuth')){
+      console.log(localStorage.getItem('todoistAuth'));
+      console.log("States do not match! Authorization aborted.")
+    } else {
+      console.log("States match")
+    }
+  }
+}
 
 export default function Home() {
-  // const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const authRedirect = {
+    code: searchParams.get('code'),
+    state: searchParams.get('state')
+  };
+  console.log("🚀 ~ Home ~ authRedirect.state:", authRedirect.state)
+  console.log("🚀 ~ Home ~ authRedirect.code:", authRedirect.code)
 
-  // const handleAuthReq = () => {
-  //   setIsLoading(true);
-  //   authRequest()
-  //     .then(() => {
-  //       setIsLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.log("ERROR IN AUTHENTICATION REQUEST: " + err);
-  //       setIsLoading(false);
-  //     });
-  // }
+  // TODO: this bullshit
+  // localStorage.setItem('todoistAuth', JSON.stringify(authData));
+  // const authData = JSON.parse(localStorage.getItem('todoistAuth'));
 
-  //TODO: UNIQUE SECRET STRINGS
 
   return (
     <div data-theme="dark">
@@ -66,9 +60,19 @@ export default function Home() {
           </div>
         </div>
         <div className="navbar-center">
-          <a href={
-            'https://todoist.com/oauth/authorize?client_id=' + process.env.CLIENT_ID + '&scope=data:read_write,data:delete&state=' + "s3cretstr!ing"
-          } className="btn btn-ghost text-xl">authenticate</a>
+          <Link
+          // href={
+          //   'https://todoist.com/oauth/authorize?client_id=' + process.env.CLIENT_ID + '&scope=data:read_write,data:delete&state=' + uid(10)
+          // }
+          // href=""
+          // onClick={
+          //   () => {
+          //     console.log("click")
+          //     permanentRedirect('https://todoist.com/oauth/authorize?client_id=' + process.env.CLIENT_ID + '&scope=data:read_write,data:delete&state=' + uid(10))
+          //   }
+          // }
+          href='/auth'
+          className="btn btn-ghost text-xl">authenticate</Link>
         </div>
         <div className="navbar-end">
           <button className="btn btn-ghost btn-circle">
