@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
+    "@types/js-cookie": "^3.0.6",
     "@types/uid2": "^0.0.2",
     "fs": "^0.0.1-security",
-    "next": "14.0.4",
+    "js-cookie": "^3.0.5",
+    "next": "^14.1.4",
     "react": "^18",
     "react-dom": "^18",
     "uid2": "^1.0.0",

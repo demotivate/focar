@@ -2,6 +2,7 @@
 "use client"
 import { useSearchParams, useRouter, permanentRedirect } from 'next/navigation'
 import Link from "next/link";
+// import { cookies } from 'next/headers'
 
 
 import { invoke } from '@tauri-apps/api/tauri'
@@ -32,17 +33,10 @@ async function CheckState(state: string){
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const authRedirect = {
-    code: searchParams.get('code'),
-    state: searchParams.get('state')
+  const trustRedirect = {
+    trust: searchParams.get('trusted'),
   };
-  console.log("🚀 ~ Home ~ authRedirect.state:", authRedirect.state)
-  console.log("🚀 ~ Home ~ authRedirect.code:", authRedirect.code)
-
-  // TODO: this bullshit
-  // localStorage.setItem('todoistAuth', JSON.stringify(authData));
-  // const authData = JSON.parse(localStorage.getItem('todoistAuth'));
-
+  console.log(trustRedirect.trust)
 
   return (
     <div data-theme="dark">
