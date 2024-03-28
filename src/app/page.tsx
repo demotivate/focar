@@ -1,43 +1,19 @@
 // ...
 "use client"
-import { useSearchParams, useRouter, permanentRedirect } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from "next/link";
-// import { cookies } from 'next/headers'
 
-
-import { invoke } from '@tauri-apps/api/tauri'
-import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
+import { TodoistApi } from '@doist/todoist-api-typescript'
 
 import Task from './task'
-import ApiButton from './apiButton'
-import { Component, useCallback, useState, useEffect } from 'react';
-import { redirect } from 'next/dist/server/api-utils';
-import uid from 'uid2';
 
 //TODO: license acknowledgement
 
 //TODO: save data (especially auth state)
 let isAuthorized : boolean = false;
 
-async function CheckState(state: string){
-  // await typeof window !== 'undefined';
-  if (typeof window !== 'undefined') {
-    if(state != localStorage.getItem('todoistAuth')){
-      console.log(localStorage.getItem('todoistAuth'));
-      console.log("States do not match! Authorization aborted.")
-    } else {
-      console.log("States match")
-    }
-  }
-}
-
 export default function Home() {
-  const searchParams = useSearchParams();
-  const trustRedirect = {
-    trust: searchParams.get('trusted'),
-  };
-  console.log(trustRedirect.trust)
-
+  console.log("Home page reached! Current token: " + process.env.TOKEN)
   return (
     <div data-theme="dark">
       <div id='navbar' className="navbar bg-base-100">

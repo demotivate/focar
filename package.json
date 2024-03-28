@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@doist/todoist-api-typescript": "^3.0.2",
     "@tauri-apps/api": "^1.5.3",
     "@types/js-cookie": "^3.0.6",
     "@types/uid2": "^0.0.2",
