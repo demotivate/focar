@@ -12,8 +12,37 @@ import Task from './task'
 //TODO: save data (especially auth state)
 let isAuthorized : boolean = false;
 
+// Definition of task
+interface TaskData {
+  id: string,
+  assignerId: string,
+  assigneeId: string,
+  projectId: string,
+  sectionId: string,
+  parentId: string,
+  order: number,
+  content: string,
+  description: string,
+  isCompleted: boolean,
+  labels: Array<any>,
+  priority: number,
+  commentCount: number,
+  creatorId: string,
+  createdAt: string,
+  due: {
+      date: string,
+      string: string, //string version of date
+      lang: string,
+      isRecurring: boolean,
+  },
+  url: string,
+  duration: any
+}
+
+// Create and store api interface with todoist
 const api = new TodoistApi(String(process.env.TOKEN))
 
+// Returns array of objects that define each task
 async function getTasks() : Promise<any> {
   return await api.getTasks()
   .then((res) => {
@@ -24,6 +53,8 @@ async function getTasks() : Promise<any> {
     return []
   })
 }
+
+const taskRow : any[] = [];
 
 export default async function Home() {
   console.log("Home page reached! Current token: " + process.env.TOKEN)
@@ -69,7 +100,14 @@ export default async function Home() {
       </div>
 
       <div id='body' className='flex flex-col px-12 justify-center bg-base-100'>
-        <Task {... await tasks[0]}></Task>
+        {
+          await tasks.forEach((task: TaskData) => {
+            console.log(task);
+            // (<Task {...task}></Task>)
+            taskRow.push(<Task {...task}></Task>)
+          })
+        }
+        <div>{taskRow}</div>
       </div>
 
       <div id='entry' className='bg-base-100'>
