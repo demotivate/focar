@@ -11,7 +11,6 @@ async function CompleteAuthorization(){
         })
       console.log('https://todoist.com/oauth/access_token?client_id=' + process.env.CLIENT_ID + '&client_secret=' + process.env.CLIENT_SECRET + '&code=' + code);
       const data = await res.json();
-      console.log("Access token: " + data.access_token);
       process.env.TOKEN = data.access_token
       process.env.STATE = 'unauthorized'
       process.env.CODE = 'unauthorized'
@@ -40,6 +39,5 @@ export async function POST(req : any) {
 
 export default async function Home(){
     await CompleteAuthorization();
-    console.log("Environment access token: " + process.env.TOKEN)
     permanentRedirect('/')
 }

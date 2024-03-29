@@ -57,7 +57,6 @@ async function getTasks() : Promise<any> {
 const taskRow : any[] = [];
 
 export default async function Home() {
-  console.log("Home page reached! Current token: " + process.env.TOKEN)
   const tasks = await getTasks();
   console.log(await tasks)
 
@@ -103,7 +102,6 @@ export default async function Home() {
         {
           await tasks.forEach((task: TaskData) => {
             console.log(task);
-            // (<Task {...task}></Task>)
             taskRow.push(<Task {...task}></Task>)
           })
         }
