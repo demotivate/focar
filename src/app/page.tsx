@@ -1,6 +1,6 @@
 // ...
 "use server"
-import { useSearchParams } from 'next/navigation'
+
 import Link from "next/link";
 
 import { TodoistApi } from '@doist/todoist-api-typescript'
@@ -8,9 +8,6 @@ import { TodoistApi } from '@doist/todoist-api-typescript'
 import Task from './task'
 
 //TODO: license acknowledgement
-
-//TODO: save data (especially auth state)
-let isAuthorized : boolean = false;
 
 // Definition of task
 interface TaskData {
@@ -101,8 +98,7 @@ export default async function Home() {
       <div id='body' className='flex flex-col px-12 justify-center bg-base-100'>
         {
           await tasks.forEach((task: TaskData) => {
-            console.log(task);
-            taskRow.push(<Task {...task}></Task>)
+            taskRow.push(<Task {...task} key={task.id}></Task>)
           })
         }
         <div>{taskRow}</div>
