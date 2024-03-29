@@ -1,5 +1,5 @@
 // ...
-"use client"
+"use server"
 import { useSearchParams } from 'next/navigation'
 import Link from "next/link";
 
@@ -12,8 +12,24 @@ import Task from './task'
 //TODO: save data (especially auth state)
 let isAuthorized : boolean = false;
 
-export default function Home() {
+const api = new TodoistApi(String(process.env.TOKEN))
+
+async function getTasks() : Promise<any> {
+  return await api.getTasks()
+  .then((res) => {
+    return res
+  })
+  .catch((error) => {
+    console.log("Error!: " + error)
+    return []
+  })
+}
+
+export default async function Home() {
   console.log("Home page reached! Current token: " + process.env.TOKEN)
+  const tasks = await getTasks();
+  console.log(await tasks)
+
   return (
     <div data-theme="dark">
       <div id='navbar' className="navbar bg-base-100">
@@ -30,17 +46,15 @@ export default function Home() {
           </div>
         </div>
         <div className="navbar-center">
+          {/* {process.env.TOKEN == 'unauthorized' ? (
+            <Link
+            href='/auth'
+            className="btn btn-ghost text-xl">authenticate</Link>
+          ) :
           <Link
-          // href={
-          //   'https://todoist.com/oauth/authorize?client_id=' + process.env.CLIENT_ID + '&scope=data:read_write,data:delete&state=' + uid(10)
-          // }
-          // href=""
-          // onClick={
-          //   () => {
-          //     console.log("click")
-          //     permanentRedirect('https://todoist.com/oauth/authorize?client_id=' + process.env.CLIENT_ID + '&scope=data:read_write,data:delete&state=' + uid(10))
-          //   }
-          // }
+          href='/auth'
+          className="btn btn-ghost text-xl">logout</Link>} */}
+          <Link
           href='/auth'
           className="btn btn-ghost text-xl">authenticate</Link>
         </div>
@@ -55,8 +69,7 @@ export default function Home() {
       </div>
 
       <div id='body' className='flex flex-col px-12 justify-center bg-base-100'>
-        <Task></Task>
-        <Task></Task>
+        <Task {... await tasks[0]}></Task>
       </div>
 
       <div id='entry' className='bg-base-100'>

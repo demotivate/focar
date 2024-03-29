@@ -2,7 +2,33 @@
 
 import { useEffect, useState } from 'react';
 
-export default function Task(){
+interface TaskData {
+    id: string,
+    assignerId: string,
+    assigneeId: string,
+    projectId: string,
+    sectionId: string,
+    parentId: string,
+    order: number,
+    content: string,
+    description: string,
+    isCompleted: boolean,
+    labels: Array<any>,
+    priority: number,
+    commentCount: number,
+    creatorId: string,
+    createdAt: string,
+    due: {
+        date: string,
+        string: string, //string version of date
+        lang: string,
+        isRecurring: boolean,
+    },
+    url: string,
+    duration: any
+}
+
+export default function Task({ id, assignerId, assigneeId, projectId, sectionId, parentId, order, content, description, isCompleted, labels, priority, commentCount, creatorId, createdAt, due, url, duration } : TaskData){
     const [taskName, setTaskName] = useState<string>('');
     const [taskDescription, setTaskDescription] = useState<string>('');
     const [taskDueDate, setTaskDueDate] = useState<number>(-1); //ddmmyyyy
@@ -19,7 +45,7 @@ export default function Task(){
                 <div className='flex flex-row basis-5/6'>
                     <div className='basis-3/4 flex flex-col'>
                         <div className='basis-3/4'>
-                            <b>Gunga ginga</b>
+                            <b>{content}</b>
                         </div>
                         <div className='basis-1/4'></div>
                     </div>
