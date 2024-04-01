@@ -9,6 +9,8 @@ import Task from './task'
 import RefreshPage from "./refreshPage";
 import { useRouter } from "next/navigation";
 import { useState } from 'react'
+import { revalidatePath } from "next/cache";
+import { RefreshCache } from "./refresh-cache";
 
 //TODO: license acknowledgement
 
@@ -76,9 +78,11 @@ async function refreshTasks() {
   taskRow = []
   return await tasks.forEach((task: TaskData) => {
     taskRow.push(<Task {...task} key={task.id}></Task>)
+    // revalidatePath('/')
   })
 }
 
+let wasTaskAdded = false;
 async function AddTask(formData: FormData) {
   'use server'
 
@@ -86,17 +90,22 @@ async function AddTask(formData: FormData) {
     content: formData.get('content'),
   }
 
+  // const router = useRouter();
+
   return api.addTask({
       content: taskInfo.content,
   })
     .then((res) => {
       const task : ClientTaskData = res
       console.log(task)
-      refreshTasks()
-        .then(() => {
-          console.log("then reached")
-        });
+      // refreshTasks()
+      //   .then(() => {
+      //     console.log("then reached")
+      //     // router.refresh();
+      //     revalidatePath('/')
+      //   });
       // taskRow.push(<Task {...task} key={task.id}></Task>)
+      wasTaskAdded = true;
     })
     .catch((error) => console.log(error))
 }
@@ -107,6 +116,19 @@ export default async function Home() {
   const tasks = await getTasks();
   await refreshTasks();
   // console.log(await tasks)
+
+  async function checkIfTaskAdded() {
+    'use server';
+    // const currTasks = await getTasks();
+    // const didChange = taskRow.length != await currTasks.length
+
+    if(wasTaskAdded){
+      revalidatePath("/")
+    }
+
+    console.log("wasTaskAdded?", wasTaskAdded)
+    wasTaskAdded = false;
+  }
 
   return (
     <div data-theme="dark">
@@ -154,13 +176,17 @@ export default async function Home() {
               taskRow.push(<Task {...task} key={task.id}></Task>)
             })
           } */}
-          <div>{taskRow}</div>
+          <div>{...taskRow}</div>
         </div>
 
+        <RefreshCache check={checkIfTaskAdded}/>
         <div id='entry' className='basis-1/12 flex flex-row px-12 justify-center bg-base-100'>
           <form action={AddTask}>
             <input name="content" type="text" placeholder="Add a task" className="basis-full input input-bordered w-full max-w-xs" />
           </form>
+          {/* <form action={checkIfTaskAdded}>
+            <button type="submit">Check if changed</button>
+          </form> */}
         </div>
       </div>
     </div>
