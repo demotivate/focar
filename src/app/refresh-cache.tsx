@@ -19,6 +19,6 @@ export function RefreshCache({ check }: { check: () => Promise<void>}) {
         }
     })
     
-    useInterval(check, shouldRun ? 1000: null)
+    useInterval(check, shouldRun ? 100: null)
     return null;
 }

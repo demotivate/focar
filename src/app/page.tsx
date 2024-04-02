@@ -140,7 +140,7 @@ export default async function Home() {
     console.log('selectedDate updated on page.tsx! Current value:', selectedDate)
   }
 
-  const tasks = await getTasks();
+  const tasks : TaskData[] = await getTasks();
   await refreshTasks();
   // console.log(await tasks)
 
@@ -215,7 +215,7 @@ export default async function Home() {
         <div id='body' className='basis-5/6 flex flex-col px-12 justify-center bg-base-100'>
           {taskView === 'list' 
             ?(<div>{...taskRow}</div>)
-            :(<div><ClientCalendar /></div>)
+            :(<div><ClientCalendar {...tasks} /></div>)
           }
         </div>
 
@@ -224,7 +224,9 @@ export default async function Home() {
           <form action={AddTask}>
             <input name="content" type="text" placeholder="Add a task" className="basis-full input input-bordered w-full max-w-xs" />
           </form>
-          <DatePicker update={UpdateSelectedDate}/>
+          <div className="flex justify-center items-center ml-4">
+            <DatePicker update={UpdateSelectedDate}/>
+          </div>
         </div>
       </div>
     </div>

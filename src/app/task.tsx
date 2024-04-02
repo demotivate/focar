@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTimer } from 'react-timer-hook'
 import { TodoistApi, isSuccess } from '@doist/todoist-api-typescript'
+import dateFormat from "dateformat";
 
 interface TaskData {
     del: Function,
@@ -80,6 +81,8 @@ function MyTimer(expiryTimestamp:any, autoStart:boolean) {
 
 export default function Task( {del, id, assignerId, assigneeId, projectId, sectionId, parentId, order, content, description, isCompleted, labels, priority, commentCount, creatorId, createdAt, due, url, duration } : TaskData){
     const DeleteTask = () => del(id)
+    const dueDate = new Date(due.date)
+    dueDate.setDate(dueDate.getDate()+1)
     const time = new Date();
     time.setSeconds(time.getSeconds() + 1500);
 
@@ -101,6 +104,7 @@ export default function Task( {del, id, assignerId, assigneeId, projectId, secti
                             <b>{content}</b>
                         </div>
                         <div className='basis-1/4'>
+                            <p>Due: {dateFormat(dueDate, "dddd, mmmm dS, yyyy")}</p>
                         </div>
                     </div>
                     <div className='basis-1/4'><MyTimer expiryTimestamp={time} autoStart={false}/></div>

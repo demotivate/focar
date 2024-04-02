@@ -12,8 +12,10 @@
   "dependencies": {
     "@doist/todoist-api-typescript": "^3.0.2",
     "@tauri-apps/api": "^1.5.3",
+    "@types/dateformat": "^5.0.2",
     "@types/js-cookie": "^3.0.6",
     "@types/uid2": "^0.0.2",
+    "dateformat": "^5.0.3",
     "flatpickr": "^4.6.13",
     "fs": "^0.0.1-security",
     "js-cookie": "^3.0.5",
