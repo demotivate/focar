@@ -86,6 +86,7 @@ export default async function Home() {
     api.deleteTask(String(id))
         .then((isSuccess) => {
             console.log(isSuccess)
+            wasTaskAdded = true;
         })
         .catch((error) => {
             console.log(error)
@@ -140,16 +141,16 @@ export default async function Home() {
 
     if(wasTaskAdded){
       revalidatePath("/")
+      wasTaskAdded = false;
     }
 
     // console.log("wasTaskAdded?", wasTaskAdded)
-    wasTaskAdded = false;
   }
 
   return (
     <div data-theme="dark">
       <div className="flex flex-col">
-        <div id='navbar' className="basis-1/12 navbar bg-base-100">
+        <div id='navbar' className="sticky top-0 basis-1/12 navbar bg-base-100">
           <div className="navbar-start">
             <div className="dropdown">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -196,7 +197,7 @@ export default async function Home() {
         </div>
 
         <RefreshCache check={checkIfTaskAdded}/>
-        <div id='entry' className='basis-1/12 flex flex-row px-12 justify-center bg-base-100'>
+        <div id='entry' className='sticky bottom-0 py-6 mb-0 basis-1/12 flex flex-row px-12 justify-center bg-base-100'>
           <form action={AddTask}>
             <input name="content" type="text" placeholder="Add a task" className="basis-full input input-bordered w-full max-w-xs" />
           </form>
