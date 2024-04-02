@@ -6,6 +6,8 @@ import Link from "next/link";
 import { TodoistApi } from '@doist/todoist-api-typescript'
 
 import Task from './task'
+import ClientCalendar from "./calendar";
+import DatePicker from "./datePicker";
 import RefreshPage from "./refreshPage";
 import { useRouter } from "next/navigation";
 // import { useState } from 'react'
@@ -63,7 +65,8 @@ const api = new TodoistApi(String(process.env.TOKEN))
 
 
 let wasTaskAdded = false;
-
+let taskView = 'list';
+let selectedDate = '1970-01-01'
 
 let taskRow : any[] = [];
 
@@ -114,6 +117,7 @@ export default async function Home() {
   
     return api.addTask({
         content: taskInfo.content,
+        due_date: selectedDate
     })
       .then((res) => {
         const task : ClientTaskData = res
@@ -128,6 +132,12 @@ export default async function Home() {
         wasTaskAdded = true;
       })
       .catch((error) => console.log(error))
+  }
+
+  async function UpdateSelectedDate(date:string){
+    'use server'
+    selectedDate = date;
+    console.log('selectedDate updated on page.tsx! Current value:', selectedDate)
   }
 
   const tasks = await getTasks();
@@ -145,6 +155,19 @@ export default async function Home() {
     }
 
     // console.log("wasTaskAdded?", wasTaskAdded)
+  }
+
+  async function CalendarView(){
+    'use server'
+    console.log("made it to CalendarView")
+    taskView = 'calendar'
+    revalidatePath("/")
+  }
+  async function ListView(){
+    'use server'
+    console.log("made it to ListView")
+    taskView = 'list'
+    revalidatePath("/")
   }
 
   return (
@@ -177,22 +200,23 @@ export default async function Home() {
             className="btn btn-ghost text-xl">authenticate</Link>
           </div>
           <div className="navbar-end">
-            <button className="btn btn-ghost btn-circle">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="80" d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" /></svg>
-            </button>
-            <button className="btn btn-ghost btn-circle">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="80" d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
-            </button>
+            <form action={CalendarView}>
+              <button type="submit" className="btn btn-ghost btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="80" d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z" /></svg>
+              </button>
+            </form>
+            <form action={ListView}>
+              <button className="btn btn-ghost btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="80" d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+              </button>
+            </form>
           </div>
         </div>
-
         <div id='body' className='basis-5/6 flex flex-col px-12 justify-center bg-base-100'>
-          {/* {
-            await tasks.forEach((task: TaskData) => {
-              taskRow.push(<Task {...task} key={task.id}></Task>)
-            })
-          } */}
-          <div>{...taskRow}</div>
+          {taskView === 'list' 
+            ?(<div>{...taskRow}</div>)
+            :(<div><ClientCalendar /></div>)
+          }
         </div>
 
         <RefreshCache check={checkIfTaskAdded}/>
@@ -200,9 +224,7 @@ export default async function Home() {
           <form action={AddTask}>
             <input name="content" type="text" placeholder="Add a task" className="basis-full input input-bordered w-full max-w-xs" />
           </form>
-          {/* <form action={checkIfTaskAdded}>
-            <button type="submit">Check if changed</button>
-          </form> */}
+          <DatePicker update={UpdateSelectedDate}/>
         </div>
       </div>
     </div>

@@ -6,9 +6,12 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  blocklist: [
+    './src/app/calendar.tsx'
+  ],
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["luxury"], //when there's multiple themes, bottom of page turns into inconsistent color
+    themes: ["cupcake"], //when there's multiple themes, bottom of page turns into inconsistent color
   },
   theme: {
     extend: {
