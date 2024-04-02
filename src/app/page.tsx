@@ -8,7 +8,7 @@ import { TodoistApi } from '@doist/todoist-api-typescript'
 import Task from './task'
 import RefreshPage from "./refreshPage";
 import { useRouter } from "next/navigation";
-import { useState } from 'react'
+// import { useState } from 'react'
 import { revalidatePath } from "next/cache";
 import { RefreshCache } from "./refresh-cache";
 
@@ -60,59 +60,75 @@ interface ClientTaskData{
 // Create and store api interface with todoist
 const api = new TodoistApi(String(process.env.TOKEN))
 
-// Returns array of objects that define each task
-async function getTasks() : Promise<any> {
-  return await api.getTasks()
-  .then((res) => {
-    return res
-  })
-  .catch((error) => {
-    console.log("Error!: " + error)
-    return []
-  })
-}
 
-async function refreshTasks() {
-  const tasks = await getTasks();
-  // console.log(await tasks)
-  taskRow = []
-  return await tasks.forEach((task: TaskData) => {
-    taskRow.push(<Task {...task} key={task.id}></Task>)
-    // revalidatePath('/')
-  })
-}
 
 let wasTaskAdded = false;
-async function AddTask(formData: FormData) {
-  'use server'
 
-  const taskInfo = {
-    content: formData.get('content'),
-  }
-
-  // const router = useRouter();
-
-  return api.addTask({
-      content: taskInfo.content,
-  })
-    .then((res) => {
-      const task : ClientTaskData = res
-      console.log(task)
-      // refreshTasks()
-      //   .then(() => {
-      //     console.log("then reached")
-      //     // router.refresh();
-      //     revalidatePath('/')
-      //   });
-      // taskRow.push(<Task {...task} key={task.id}></Task>)
-      wasTaskAdded = true;
-    })
-    .catch((error) => console.log(error))
-}
 
 let taskRow : any[] = [];
 
 export default async function Home() {
+  // Returns array of objects that define each task
+  async function getTasks() : Promise<any> {
+    return await api.getTasks()
+    .then((res) => {
+      return res
+    })
+    .catch((error) => {
+      console.log("Error!: " + error)
+      return []
+    })
+  }
+
+  async function DeleteTask(id: number){
+    'use server'
+    console.log("deletetask reached")
+    api.deleteTask(String(id))
+        .then((isSuccess) => {
+            console.log(isSuccess)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+  }
+
+  async function refreshTasks() {
+    const tasks = await getTasks();
+    // console.log(await tasks)
+    taskRow = []
+    return await tasks.forEach((task: TaskData) => {
+      taskRow.push(<Task {...task} del={DeleteTask} key={task.id}/>)
+      // revalidatePath('/')
+    })
+  }
+
+  async function AddTask(formData: FormData) {
+    'use server'
+  
+    const taskInfo = {
+      content: formData.get('content'),
+    }
+  
+    // const router = useRouter();
+  
+    return api.addTask({
+        content: taskInfo.content,
+    })
+      .then((res) => {
+        const task : ClientTaskData = res
+        console.log(task)
+        // refreshTasks()
+        //   .then(() => {
+        //     console.log("then reached")
+        //     // router.refresh();
+        //     revalidatePath('/')
+        //   });
+        // taskRow.push(<Task {...task} key={task.id}></Task>)
+        wasTaskAdded = true;
+      })
+      .catch((error) => console.log(error))
+  }
+
   const tasks = await getTasks();
   await refreshTasks();
   // console.log(await tasks)
@@ -126,7 +142,7 @@ export default async function Home() {
       revalidatePath("/")
     }
 
-    console.log("wasTaskAdded?", wasTaskAdded)
+    // console.log("wasTaskAdded?", wasTaskAdded)
     wasTaskAdded = false;
   }
 

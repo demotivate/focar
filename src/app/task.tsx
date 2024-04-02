@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { TodoistApi, isSuccess } from '@doist/todoist-api-typescript'
 
 interface TaskData {
+    del: Function,
     id: string,
     assignerId: string,
     assigneeId: string,
@@ -25,21 +27,24 @@ interface TaskData {
         isRecurring: boolean,
     },
     url: string,
-    duration: any
+    duration: any,
 }
 
-export default function Task({ id, assignerId, assigneeId, projectId, sectionId, parentId, order, content, description, isCompleted, labels, priority, commentCount, creatorId, createdAt, due, url, duration } : TaskData){
-    const [taskName, setTaskName] = useState<string>('');
-    const [taskDescription, setTaskDescription] = useState<string>('');
-    const [taskDueDate, setTaskDueDate] = useState<number>(-1); //ddmmyyyy
+const api = new TodoistApi(String(process.env.TOKEN))
+
+export default function Task( {del, id, assignerId, assigneeId, projectId, sectionId, parentId, order, content, description, isCompleted, labels, priority, commentCount, creatorId, createdAt, due, url, duration } : TaskData){
+    const DeleteTask = () => del(id)
 
     return(
         <div data-theme="dark">
             <div className='flex flex-row justify-start basis-full my-2 px-3 py-6 bg-primary rounded-md'>
                 <div className='basis-1/12'>
-                    <button className="mx-3 btn btn-circle btn-outline">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="125" d="M382-276 192-466l20-20 170 170 366-366 20 20-386 386Z" /></svg>
-                    </button>
+                    {/* <form action={del}
+                    }}> */}
+                        <button onClick={DeleteTask} className="mx-3 btn btn-circle btn-outline">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 -960 960 960" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="125" d="M382-276 192-466l20-20 170 170 366-366 20 20-386 386Z" /></svg>
+                        </button>
+                    {/* </form> */}
                 </div>
 
                 <div className='flex flex-row basis-5/6'>
