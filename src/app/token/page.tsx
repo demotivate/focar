@@ -21,20 +21,20 @@ async function CompleteAuthorization(){
 }
 
 // app/form/page.js
-export async function POST(req : any) {
-    const data = await req.json(); // Parse JSON request body
+// export async function POST(req : any) {
+//     const data = await req.json(); // Parse JSON request body
 
-    // Do something with the received data (e.g., save to database)
-    console.log('Received data:', data);
+//     // Do something with the received data (e.g., save to database)
+//     console.log('Received data:', data);
 
-    // Return a response
-    return new Response(JSON.stringify({ message: 'Data received!' }), {
-        status: 201, // Created
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-}
+//     // Return a response
+//     return new Response(JSON.stringify({ message: 'Data received!' }), {
+//         status: 201, // Created
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     });
+// }
 
 
 export default async function Home(){
